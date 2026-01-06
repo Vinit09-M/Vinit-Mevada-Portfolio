@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Terminal, 
   Shield, 
@@ -10,14 +10,12 @@ import {
   Cpu, 
   Code,
   Globe,
-  MessageSquare,
   Award,
   ExternalLink,
   Wrench
 } from 'lucide-react';
 import { INITIAL_DATA } from './constants';
 import { PortfolioData, Project } from './types';
-import { generateTerminalResponse } from './services/geminiService';
 
 // --- Utility Components ---
 
@@ -55,16 +53,7 @@ export default function App() {
     return 'light';
   });
 
-  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  
-  // Terminal State
-  const [terminalInput, setTerminalInput] = useState('');
-  const [terminalHistory, setTerminalHistory] = useState<{role: 'user' | 'system', text: string}[]>([
-    { role: 'system', text: 'Welcome to VinitOS v2.0. Type a query to begin...' }
-  ]);
-  const [isTyping, setIsTyping] = useState(false);
-  const terminalEndRef = useRef<HTMLDivElement>(null);
 
   // Theme Logic
   useEffect(() => {
@@ -81,10 +70,6 @@ export default function App() {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
-  useEffect(() => {
-    terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [terminalHistory]);
-
   // --- Helper for Themed Cards (HOF & Tools) ---
   const getThemeCardClasses = (style: string = 'classic') => {
     switch (style) {
@@ -96,23 +81,6 @@ export default function App() {
       default:
         return "bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-hard dark:shadow-[4px_4px_0px_0px_rgba(30,41,59,1)] dark:shadow-slate-800 hover:-translate-y-1 transition-all duration-200 hover:shadow-hard-lg dark:hover:shadow-slate-700";
     }
-  };
-
-  // --- Terminal Logic ---
-
-  const handleTerminalSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!terminalInput.trim()) return;
-
-    const query = terminalInput;
-    setTerminalInput('');
-    setTerminalHistory(prev => [...prev, { role: 'user', text: `> ${query}` }]);
-    setIsTyping(true);
-
-    const response = await generateTerminalResponse(query, data);
-    
-    setIsTyping(false);
-    setTerminalHistory(prev => [...prev, { role: 'system', text: response }]);
   };
 
   return (
@@ -144,59 +112,7 @@ export default function App() {
          </div>
       </div>
 
-      {/* --- Terminal Assistant Toggle (Right Side) --- */}
-      <div className="fixed top-6 right-6 z-50">
-        <button 
-          onClick={() => setIsTerminalOpen(!isTerminalOpen)}
-          className="bg-slate-800 dark:bg-cyan-700 text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform flex items-center justify-center border-2 border-transparent dark:border-cyan-500"
-          title="Open Terminal Assistant"
-        >
-          <Terminal className="w-6 h-6" />
-        </button>
-      </div>
-
-      {/* --- Modals --- */}
-      
-      {/* Terminal Modal */}
-      {isTerminalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-2xl bg-slate-900 rounded-lg shadow-2xl overflow-hidden border border-slate-700 flex flex-col h-[500px]">
-            <div className="bg-slate-800 p-3 flex justify-between items-center border-b border-slate-700">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-                <span className="ml-2 text-xs text-slate-400 font-mono">bash -- vinit-assistant</span>
-              </div>
-              <button onClick={() => setIsTerminalOpen(false)} className="text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex-1 p-4 overflow-y-auto font-mono text-sm text-green-400 space-y-2">
-              {terminalHistory.map((msg, idx) => (
-                <div key={idx} className={msg.role === 'user' ? 'text-cyan-300' : 'text-slate-300'}>
-                  {msg.text}
-                </div>
-              ))}
-              {isTyping && <div className="text-slate-500 animate-pulse">Processing...</div>}
-              <div ref={terminalEndRef} />
-            </div>
-            <form onSubmit={handleTerminalSubmit} className="p-3 bg-slate-800 border-t border-slate-700 flex gap-2">
-              <span className="text-green-500 font-mono py-2">{'>'}</span>
-              <input 
-                type="text" 
-                value={terminalInput}
-                onChange={(e) => setTerminalInput(e.target.value)}
-                className="flex-1 bg-transparent text-white font-mono focus:outline-none py-2"
-                placeholder="Ask about my skills, projects..."
-                autoFocus
-              />
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Project Details Modal */}
+      {/* --- Project Details Modal --- */}
       {selectedProject && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4" onClick={() => setSelectedProject(null)}>
           <div className="w-full max-w-3xl bg-white dark:bg-slate-900 rounded-lg shadow-2xl overflow-hidden border-2 border-slate-800 dark:border-cyan-900 relative" onClick={e => e.stopPropagation()}>
@@ -480,8 +396,9 @@ export default function App() {
            <p className="mb-2">SECURE CONNECTION ESTABLISHED</p>
            <p>© {new Date().getFullYear()} {data.name}. All systems operational.</p>
            <div className="mt-4 flex justify-center gap-4">
-              <MessageSquare className="w-5 h-5 cursor-pointer hover:text-cyber-primary transition-colors" onClick={() => setIsTerminalOpen(true)} />
-              <Mail className="w-5 h-5 cursor-pointer hover:text-cyber-primary transition-colors" />
+              <Mail className="w-5 h-5 cursor-pointer hover:text-cyber-primary transition-colors" onClick={() => window.location.href = `mailto:${data.social.email}`} />
+              <Linkedin className="w-5 h-5 cursor-pointer hover:text-cyber-primary transition-colors" onClick={() => window.open(data.social.linkedin, '_blank')} />
+              <Github className="w-5 h-5 cursor-pointer hover:text-cyber-primary transition-colors" onClick={() => window.open(data.social.github, '_blank')} />
            </div>
         </footer>
 
