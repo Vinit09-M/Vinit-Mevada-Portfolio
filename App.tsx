@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Terminal, 
   Shield, 
   X, 
   Github, 
@@ -12,7 +11,9 @@ import {
   Globe,
   Award,
   ExternalLink,
-  Wrench
+  Wrench,
+  // Fix: Added Terminal to the imports from lucide-react
+  Terminal
 } from 'lucide-react';
 import { INITIAL_DATA } from './constants';
 import { PortfolioData, Project } from './types';
@@ -184,16 +185,28 @@ export default function App() {
                 {data.about}
               </p>
 
-              <div className="flex flex-wrap gap-4 pt-4">
+              <div className="flex flex-wrap gap-4 pt-4 items-center">
                 <a href={data.social.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white font-mono text-sm hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors shadow-hard-sm dark:shadow-none">
                   <Linkedin className="w-4 h-4" /> LINKEDIN
                 </a>
                 <a href={data.social.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-2 border-slate-800 dark:border-slate-600 font-mono text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-hard-sm dark:shadow-none">
                   <Github className="w-4 h-4" /> GITHUB
                 </a>
-                <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-mono text-sm border-2 border-transparent">
-                  <MapPin className="w-4 h-4 text-cyber-primary" /> {data.location}
-                </div>
+                
+                {data.locationLink ? (
+                  <a 
+                    href={data.locationLink} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="flex items-center gap-2 text-slate-600 dark:text-slate-400 font-mono text-sm hover:text-cyber-primary transition-colors ml-2"
+                  >
+                    <MapPin className="w-4 h-4 text-cyber-primary" /> {data.location}
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 font-mono text-sm ml-2">
+                    <MapPin className="w-4 h-4 text-cyber-primary" /> {data.location}
+                  </div>
+                )}
               </div>
             </div>
 
