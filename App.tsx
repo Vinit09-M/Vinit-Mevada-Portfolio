@@ -144,12 +144,16 @@ export default function App() {
                 </div>
 
                 <div className="flex justify-end gap-3">
-                  <a href={selectedProject.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 bg-slate-800 dark:bg-slate-700 text-white font-mono font-bold shadow-hard dark:shadow-[4px_4px_0_0_#000] hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors">
-                    <Github className="w-4 h-4" /> VIEW SOURCE
-                  </a>
-                  <a href={selectedProject.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 bg-cyber-primary text-white font-mono font-bold shadow-hard dark:shadow-[4px_4px_0_0_#000] hover:bg-cyber-accent transition-colors">
-                    <ExternalLink className="w-4 h-4" /> LIVE DEMO
-                  </a>
+                  {selectedProject.link && (
+                    <a href={selectedProject.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 bg-slate-800 dark:bg-slate-700 text-white font-mono font-bold shadow-hard dark:shadow-[4px_4px_0_0_#000] hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors">
+                      <Github className="w-4 h-4" /> VIEW SOURCE
+                    </a>
+                  )}
+                  {selectedProject.demoLink && (
+                    <a href={selectedProject.demoLink} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 bg-cyber-primary text-white font-mono font-bold shadow-hard dark:shadow-[4px_4px_0_0_#000] hover:bg-cyber-accent transition-colors">
+                      <ExternalLink className="w-4 h-4" /> LIVE DEMO
+                    </a>
+                  )}
                 </div>
              </div>
           </div>
