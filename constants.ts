@@ -5,6 +5,8 @@ export const INITIAL_DATA: PortfolioData = {
   title: "Cyber Security Analyst | Penetration Tester",
   about: "A dedicated Penetration Tester specializing in offensive security. Skilled in identifying vulnerabilities, performing security assessments, and implementing solutions to strengthen systems. Passionate about ethical hacking, bug bounty hunting, and continuously learning the latest security techniques to stay ahead in the cybersecurity landscape.",
   location: "Bengaluru, India",
+  locationUrl: 'https://maps.app.goo.gl/4PEAMNnpCACGLJLn7'
+
   availability: "Open to Work",
   systemStatus: "SYSTEM STATUS: ONLINE",
   // Initial placeholder - can be updated via the UI
